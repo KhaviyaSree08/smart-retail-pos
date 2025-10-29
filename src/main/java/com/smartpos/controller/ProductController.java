@@ -2,7 +2,6 @@ package com.smartpos.controller;
 
 import com.smartpos.model.Product;
 import com.smartpos.service.ProductService;
-import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,43 +11,42 @@ import java.util.List;
 @Controller
 @RequestMapping("/products")
 public class ProductController {
+
     private final ProductService productService;
 
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
 
-    // REST API
-    @Operation(summary = "Get all products")
-    @GetMapping("/api")
-    @ResponseBody
-    public List<Product> getAllProducts() {
-        return productService.getAllProducts();
-    }
-
-    // Thymeleaf UI
+    // ✅ Display all products (Thymeleaf)
     @GetMapping
-    public String listProducts(Model model) {
-        model.addAttribute("products", productService.getAllProducts());
-        return "products/list";
+    public String viewProductsPage(Model model) {
+        List<Product> products = productService.getAllProducts();
+        model.addAttribute("products", products);
+        return "products";  // Thymeleaf template name
     }
 
-    @GetMapping("/new")
-    public String showNewForm(Model model) {
+    // ✅ Show Add Product Form
+    @GetMapping("/add")
+    public String showAddProductForm(Model model) {
         model.addAttribute("product", new Product());
-        return "products/new";
+        return "add-product";
     }
 
-    @PostMapping
-    public String createProduct(@ModelAttribute Product product) {
-        productService.createProduct(product);
+    // ✅ Handle Add Product
+    @PostMapping("/add")
+    public String addProduct(@ModelAttribute Product product) {
+        productService.saveProduct(product);
         return "redirect:/products";
     }
 
+    // ✅ Edit Product
     @GetMapping("/edit/{id}")
-    public String editProduct(@PathVariable Long id, Model model) {
-        model.addAttribute("product", productService.getProductById(id));
-        return "products/edit";
+    public String editProductForm(@PathVariable Long id, Model model) {
+        Product product = productService.getProductById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid product ID"));
+        model.addAttribute("product", product);
+        return "edit-product";
     }
 
     @PostMapping("/update/{id}")
@@ -57,12 +55,15 @@ public class ProductController {
         return "redirect:/products";
     }
 
+    // ✅ Delete Product
     @GetMapping("/delete/{id}")
     public String deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return "redirect:/products";
     }
 }
+
+
 
 
 

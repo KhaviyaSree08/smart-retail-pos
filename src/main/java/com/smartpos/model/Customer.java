@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Product {
+public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,15 +17,13 @@ public class Product {
     @Column(nullable = false)
     private String name;
 
-    private String category;
+    @Column(unique = true, nullable = false)
+    private String email;
 
-    @Column(nullable = false)
-    private double price;
+    private String phone;
 
-    private int stockQuantity;
+    private String address;
 
     @Builder.Default
     private boolean active = true;
 }
-
-
