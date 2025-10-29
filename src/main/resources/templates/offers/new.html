@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Add Offer</title></head>
+<body>
+<h2>Create Offer</h2>
+<form th:action="@{/offers}" method="post" th:object="${offer}">
+    Code: <input type="text" th:field="*{code}"/><br/>
+    Description: <input type="text" th:field="*{description}"/><br/>
+    Discount (%): <input type="number" step="0.1" th:field="*{discountPercentage}"/><br/>
+    Start Date: <input type="date" th:field="*{startDate}"/><br/>
+    End Date: <input type="date" th:field="*{endDate}"/><br/>
+    Active: <input type="checkbox" th:field="*{active}"/><br/>
+    <button type="submit">Save</button>
+</form>
+</body>
+</html>

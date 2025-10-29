@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Offers List</title>
+</head>
+<body>
+<h2>All Offers</h2>
+<a href="/offers/new">+ Add New Offer</a>
+<table border="1">
+    <tr><th>ID</th><th>Code</th><th>Description</th><th>Discount</th><th>Action</th></tr>
+    <tr th:each="offer : ${offers}">
+        <td th:text="${offer.id}"></td>
+        <td th:text="${offer.code}"></td>
+        <td th:text="${offer.description}"></td>
+        <td th:text="${offer.discountPercentage}"></td>
+        <td>
+            <a th:href="@{'/offers/edit/' + ${offer.id}}">Edit</a> |
+            <a th:href="@{'/offers/delete/' + ${offer.id}}">Delete</a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

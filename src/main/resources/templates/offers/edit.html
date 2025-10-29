@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Edit Offer</title></head>
+<body>
+<h2>Edit Offer</h2>
+<form th:action="@{'/offers/update/' + ${offer.id}}" method="post" th:object="${offer}">
+    Code: <input type="text" th:field="*{code}"/><br/>
+    Description: <input type="text" th:field="*{description}"/><br/>
+    Discount (%): <input type="number" th:field="*{discountPercentage}"/><br/>
+    Start Date: <input type="date" th:field="*{startDate}"/><br/>
+    End Date: <input type="date" th:field="*{endDate}"/><br/>
+    Active: <input type="checkbox" th:field="*{active}"/><br/>
+    <button type="submit">Update</button>
+</form>
+</body>
+</html>
