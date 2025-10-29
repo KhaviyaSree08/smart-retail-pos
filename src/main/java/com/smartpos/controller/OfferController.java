@@ -2,40 +2,52 @@ package com.smartpos.controller;
 
 import com.smartpos.model.Offer;
 import com.smartpos.service.OfferService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/offers")
+@CrossOrigin("*")
 public class OfferController {
-    private final OfferService service;
 
-    public OfferController(OfferService service) {
-        this.service = service;
+    private final OfferService offerService;
+
+    public OfferController(OfferService offerService) {
+        this.offerService = offerService;
     }
 
-    @PostMapping
-    public ResponseEntity<Offer> addOffer(@RequestBody Offer offer) {
-        return ResponseEntity.ok(service.save(offer));
+    // ✅ Get all active offers
+    @GetMapping("/active")
+    public List<Offer> getActiveOffers() {
+        return offerService.getActiveOffers();
     }
 
+    // 🧾 Get all offers (admin only)
     @GetMapping
-    public List<Offer> getAll() {
-        return service.getAll();
+    public List<Offer> getAllOffers() {
+        return offerService.getAllOffers();
     }
 
-    @GetMapping("/{code}")
-    public ResponseEntity<Offer> getByCode(@PathVariable String code) {
-        return service.getByCode(code)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    // ➕ Create a new offer
+    @PostMapping
+    public Offer createOffer(@RequestBody Offer offer) {
+        return offerService.createOffer(offer);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
-        return ResponseEntity.noContent().build();
+    // 🚫 Deactivate an offer
+    @PutMapping("/{id}/deactivate")
+    public String deactivateOffer(@PathVariable Long id) {
+        offerService.deactivateOffer(id);
+        return "Offer deactivated successfully";
+    }
+
+    // 🧩 Validate an offer code (for checkout)
+    @GetMapping("/validate/{code}")
+    public Offer validateOffer(@PathVariable String code) {
+        return offerService.validateOffer(code);
     }
 }
+
+
 

@@ -2,7 +2,6 @@ package com.smartpos.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDate;
 
 @Entity
 @Data
@@ -13,9 +12,8 @@ public class Offer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String code; // e.g. FESTIVE10
-    private Double discountPercent;
-    private LocalDate validFrom;
-    private LocalDate validTo;
-    private boolean active;
+    private String code;                
+    private String description;         
+    private Double discountPercentage;  
+    private boolean active = true;      
 }

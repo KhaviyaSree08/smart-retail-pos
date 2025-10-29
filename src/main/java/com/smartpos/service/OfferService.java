@@ -3,30 +3,56 @@ package com.smartpos.service;
 import com.smartpos.model.Offer;
 import com.smartpos.repository.OfferRepository;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class OfferService {
-    private final OfferRepository repo;
 
-    public OfferService(OfferRepository repo) {
-        this.repo = repo;
+    private final OfferRepository offerRepository;
+
+    public OfferService(OfferRepository offerRepository) {
+        this.offerRepository = offerRepository;
     }
 
-    public Offer save(Offer offer) {
-        return repo.save(offer);
+    // Get all active offers
+    public List<Offer> getActiveOffers() {
+        return offerRepository.findByActiveTrue();
     }
 
-    public List<Offer> getAll() {
-        return repo.findAll();
+    // Get all offers (admin view)
+    public List<Offer> getAllOffers() {
+        return offerRepository.findAll();
     }
 
-    public Optional<Offer> getByCode(String code) {
-        return repo.findByCode(code);
+    // Add a new offer
+    public Offer createOffer(Offer offer) {
+        return offerRepository.save(offer);
     }
 
-    public void delete(Long id) {
-        repo.deleteById(id);
+    // Deactivate or delete an offer
+    public void deactivateOffer(Long id) {
+        Optional<Offer> offerOpt = offerRepository.findById(id);
+        if (offerOpt.isPresent()) {
+            Offer offer = offerOpt.get();
+            offer.setActive(false);
+            offerRepository.save(offer);
+        } else {
+            throw new RuntimeException("Offer not found with ID: " + id);
+        }
+    }
+
+    // Validate an offer code
+    public Offer validateOffer(String code) {
+        Offer offer = offerRepository.findByCode(code)
+                .orElseThrow(() -> new RuntimeException("Invalid offer code"));
+
+        if (!offer.isActive()) {
+            throw new RuntimeException("Offer code is inactive");
+        }
+
+        return offer;
     }
 }
+
