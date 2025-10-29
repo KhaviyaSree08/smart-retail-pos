@@ -3,35 +3,40 @@ package com.smartpos.service;
 import com.smartpos.model.Product;
 import com.smartpos.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductService {
+    private final ProductRepository productRepository;
 
-    private final ProductRepository repo;
-
-    public ProductService(ProductRepository repo) {
-        this.repo = repo;
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
-    public Product save(Product product) {
-        return repo.save(product);
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 
-    public List<Product> findAll() {
-        return repo.findAll();
+    public Product getProductById(Long id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
-    public Optional<Product> findBySku(String sku) {
-        return repo.findBySku(sku);
+    public Product createProduct(Product product) {
+        return productRepository.save(product);
     }
 
-    public Optional<Product> findById(Long id) {
-        return repo.findById(id);
+    public Product updateProduct(Long id, Product updatedProduct) {
+        Product product = getProductById(id);
+        product.setName(updatedProduct.getName());
+        product.setPrice(updatedProduct.getPrice());
+        product.setStock(updatedProduct.getStock());
+        return productRepository.save(product);
     }
 
-    public void delete(Long id) {
-        repo.deleteById(id);
+    public void deleteProduct(Long id) {
+        productRepository.deleteById(id);
     }
 }
+

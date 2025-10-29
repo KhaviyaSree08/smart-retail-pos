@@ -2,33 +2,32 @@ package com.smartpos.service;
 
 import com.smartpos.model.Invoice;
 import com.smartpos.repository.InvoiceRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class InvoiceService {
 
-    private final InvoiceRepository repo;
+    @Autowired
+    private InvoiceRepository invoiceRepository;
 
-    public InvoiceService(InvoiceRepository repo) {
-        this.repo = repo;
+    public List<Invoice> getAllInvoices() {
+        return invoiceRepository.findAll();
     }
 
-    public Invoice save(Invoice invoice) {
-        return repo.save(invoice);
+    public Optional<Invoice> getInvoiceById(Long id) {
+        return invoiceRepository.findById(id);
     }
 
-    public List<Invoice> getAll() {
-        return repo.findAll();
+    public Invoice saveInvoice(Invoice invoice) {
+        return invoiceRepository.save(invoice);
     }
 
-    public Invoice getById(Long id) {
-        return repo.findById(id).orElse(null);
-    }
-
-    public void delete(Long id) {
-        repo.deleteById(id);
+    public void deleteInvoice(Long id) {
+        invoiceRepository.deleteById(id);
     }
 }
+
 

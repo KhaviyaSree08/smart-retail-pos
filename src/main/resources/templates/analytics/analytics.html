@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Analytics Dashboard</title></head>
+<body>
+<h2>Analytics Summary</h2>
+<table border="1">
+    <tr><th>ID</th><th>Metric</th><th>Value</th><th>Period</th></tr>
+    <tr th:each="a : ${analytics}">
+        <td th:text="${a.id}"></td>
+        <td th:text="${a.metricName}"></td>
+        <td th:text="${a.metricValue}"></td>
+        <td th:text="${a.period}"></td>
+    </tr>
+</table>
+</body>
+</html>

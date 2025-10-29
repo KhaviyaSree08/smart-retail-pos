@@ -2,42 +2,67 @@ package com.smartpos.controller;
 
 import com.smartpos.model.Product;
 import com.smartpos.service.ProductService;
-import org.springframework.http.ResponseEntity;
+import io.swagger.v3.oas.annotations.Operation;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/products")
+@Controller
+@RequestMapping("/products")
 public class ProductController {
+    private final ProductService productService;
 
-    private final ProductService service;
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
-    public ProductController(ProductService service) {
-        this.service = service;
+    // REST API
+    @Operation(summary = "Get all products")
+    @GetMapping("/api")
+    @ResponseBody
+    public List<Product> getAllProducts() {
+        return productService.getAllProducts();
+    }
+
+    // Thymeleaf UI
+    @GetMapping
+    public String listProducts(Model model) {
+        model.addAttribute("products", productService.getAllProducts());
+        return "products/list";
+    }
+
+    @GetMapping("/new")
+    public String showNewForm(Model model) {
+        model.addAttribute("product", new Product());
+        return "products/new";
     }
 
     @PostMapping
-    public ResponseEntity<Product> addProduct(@RequestBody Product product) {
-        return ResponseEntity.ok(service.save(product));
+    public String createProduct(@ModelAttribute Product product) {
+        productService.createProduct(product);
+        return "redirect:/products";
     }
 
-    @GetMapping
-    public List<Product> getAll() {
-        return service.findAll();
+    @GetMapping("/edit/{id}")
+    public String editProduct(@PathVariable Long id, Model model) {
+        model.addAttribute("product", productService.getProductById(id));
+        return "products/edit";
     }
 
-    @GetMapping("/sku/{sku}")
-    public ResponseEntity<Product> getBySku(@PathVariable String sku) {
-        return service.findBySku(sku)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @PostMapping("/update/{id}")
+    public String updateProduct(@PathVariable Long id, @ModelAttribute Product product) {
+        productService.updateProduct(id, product);
+        return "redirect:/products";
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
-        return ResponseEntity.noContent().build();
+    @GetMapping("/delete/{id}")
+    public String deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return "redirect:/products";
     }
 }
+
 
 
